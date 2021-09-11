@@ -1,13 +1,48 @@
-let uri ="https://api.spotify.com/v1/artists/3AA28KZvwAUcZuOKwyblJQ/top-tracks?market=US"
-//cambiar id para cambiar artista porq no sirve
-let token = " Bearer BQDRynTyw4s9moCnlbKXgwR0LlRBZyXQVnDEuqNED-nWCYaJFzqCNH7TJZdzs2grAU8pDpiqbegt3p5xlj85eR8h6oFHLKFm9hIO6r_bLqitsjQKHkCRsGo-lRcbATH4-o5PYt-73RBLaYVYfYdAPw1phNE2H3E"
-let parametrosPeticion ={
-    method:"GET",
+let uri="https://accounts.spotify.com/api/token";
+
+let dato1="grant_type=client_credentials";
+let dato2="client_id=6cc28104ad91429bab3f1dd90660ed53";
+let dato3="client_secret=e004da1466ea490fbba5747c7e1f16b4";
+
+let parametrosPeticion={
+    method:"POST",
     headers:{
-        Authorization:token
-    }
+        "Content-Type":"application/x-www-form-urlencoded "},
+        body:dato1 +"&"+ dato2 +"&"+ dato3
+    
+
 }
 
+fetch(uri,parametrosPeticion)
+.then(function(respuesta){
+    return(respuesta.json())
+})
+.then(function(respuesta){
+    console.log(respuesta)
+    obtenerToken(respuesta)
+})
+.catch(function(error){
+    console.log(error)
+})
+
+function obtenerToken(datos){
+
+    let token=datos.token_type+" "+datos.access_token
+    console.log(token)
+    pedirCanciones(token)
+}
+
+function pedirCanciones(token){
+    let uri ="https://api.spotify.com/v1/artists/3AA28KZvwAUcZuOKwyblJQ/top-tracks?market=US"
+
+    let parametrosPeticion ={
+        method:"GET",
+        headers:{
+            Authorization:token
+        }
+    }
+
+    
 fetch(uri,parametrosPeticion)
 .then(function(respuesta){
     return (respuesta.json());
@@ -16,14 +51,6 @@ fetch(uri,parametrosPeticion)
 .then(function(respuesta){
     console.log(respuesta);//objeto
     pintarDatos(respuesta.tracks);
-
-
-    
-   /* console.log(respuesta.tracks);//arreglo
-    console.log(respuesta.tracks[0]);//OBJETO
-    console.log(respuesta.tracks[0].name);
-    console.log(respuesta.tracks[0].preview_url);
-    console.log(respuesta.tracks[0].album.images[0].url);*/
     
 }).catch(function(error){
     console.log(error);
@@ -66,4 +93,5 @@ function pintarDatos(datos){
        
     })
 
+}
 }
